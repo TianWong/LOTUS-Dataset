@@ -11,7 +11,7 @@ def json_indent_limit(json_string, indent, limit):
     return regex_pattern.sub('', json_string)
 
 ROOT_URL = 'https://api.bgpview.io/asn'
-DELAY = 0.2
+DELAY = 1
 IP_VERSION = 4
 
 # with open('api_access_token', 'r') as infile:
@@ -74,9 +74,13 @@ try:
         if allocation != 'assigned': continue
         if service_type != 'asn': continue
         asn_data = None
+        tries = 0
         while asn_data == None:
+            tries += 1
+            if tries > 10: break
             time.sleep(DELAY)
             asn_data = get_asn_data(asn)
+        if asn_data == None: continue
         prefixes, peers, upstreams = asn_data
         if len(prefixes) == 0: continue
         info = {'rir':rir, 'country':country, 'asn':asn, 'prefixes':prefixes, 'peers':peers, 'upstreams':upstreams}
