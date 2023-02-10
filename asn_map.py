@@ -1,8 +1,8 @@
 import requests
 import time
 import json
-import networkx
 import re
+import os
 
 # A bit of code to make JSON indentation look a lot more human-readable
 # Courtesy of https://stackoverflow.com/questions/13249415/how-to-implement-custom-indentation-when-pretty-printing-with-the-json-module
@@ -60,15 +60,27 @@ as_rows = data.split('\n')[4:]
 
 asn_network_data = []
 
+checkpoint_asn = -1
+if os.path.isfile('the_internet.json'):
+    with open('the_internet.json', 'r') as infile:
+        asn_network_data = json.loads(infile.read())
+        checkpoint_asn = int(asn_network_data[-1]['asn'])
+
 try:
     for as_row in as_rows:
         rir, country, service_type, asn, _, _, allocation, _, _ = as_row.split('|')
+        if int(asn) <= checkpoint_asn: continue
+        print(asn)
         if allocation != 'assigned': continue
         if service_type != 'asn': continue
-        prefixes, peers, upstreams = get_asn_data(asn)
-        info = [rir, country, asn, prefixes, peers, upstreams]
+        asn_data = None
+        while asn_data == None:
+            time.sleep(DELAY)
+            asn_data = get_asn_data(asn)
+        prefixes, peers, upstreams = asn_data
+        if len(prefixes) == 0: continue
+        info = {'rir':rir, 'country':country, 'asn':asn, 'prefixes':prefixes, 'peers':peers, 'upstreams':upstreams}
         asn_network_data.append(info)
-        time.sleep(DELAY)
 except Exception as e:
     print(e)
 finally:
