@@ -69,10 +69,10 @@ if os.path.isfile('the_internet.json'):
 try:
     for as_row in as_rows:
         rir, country, service_type, asn, _, _, allocation, _, _ = as_row.split('|')
-        if int(asn) <= checkpoint_asn: continue
-        print(asn)
         if allocation != 'assigned': continue
         if service_type != 'asn': continue
+        if int(asn) <= checkpoint_asn: continue
+        print(asn)
         asn_data = None
         tries = 0
         while asn_data == None:
