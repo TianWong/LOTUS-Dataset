@@ -4,6 +4,9 @@ import json
 import re
 import os
 
+COUNTRY = None
+OUTFILE = 'the_internet.json'
+
 # A bit of code to make JSON indentation look a lot more human-readable
 # Courtesy of https://stackoverflow.com/questions/13249415/how-to-implement-custom-indentation-when-pretty-printing-with-the-json-module
 def json_indent_limit(json_string, indent, limit):
@@ -61,14 +64,15 @@ as_rows = data.split('\n')[4:]
 asn_network_data = []
 
 checkpoint_asn = -1
-if os.path.isfile('the_internet.json'):
-    with open('the_internet.json', 'r') as infile:
+if os.path.isfile(OUTFILE):
+    with open(OUTFILE, 'r') as infile:
         asn_network_data = json.loads(infile.read())
         checkpoint_asn = int(asn_network_data[-1]['asn'])
 
 try:
     for as_row in as_rows:
         rir, country, service_type, asn, _, _, allocation, _, _ = as_row.split('|')
+        if COUNTRY != None and country != COUNTRY: continue
         if allocation != 'assigned': continue
         if service_type != 'asn': continue
         if int(asn) <= checkpoint_asn: continue
@@ -85,10 +89,15 @@ try:
         if len(prefixes) == 0: continue
         info = {'rir':rir, 'country':country, 'asn':asn, 'prefixes':prefixes, 'peers':peers, 'upstreams':upstreams}
         asn_network_data.append(info)
+        # if asn % 1000 == 0:
+        #     with open(OUTFILE, 'w') as outfile:
+        #         json_string = json.dumps(asn_network_data, indent=1)
+        #         json_string = json_indent_limit(json_string, ' ', 2)
+        #         outfile.write(json_string)
 except Exception as e:
     print(e)
 finally:
-    with open('the_internet.json', 'w') as outfile:
+    with open(OUTFILE, 'w') as outfile:
         json_string = json.dumps(asn_network_data, indent=1)
         json_string = json_indent_limit(json_string, ' ', 2)
         outfile.write(json_string)
