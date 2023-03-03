@@ -1,7 +1,7 @@
 import os
 import json
 
-INFILE = 'the_internet.json'
+INFILE = 'the_internet_cleaned.json'
 OUTFILE = 'top_level_asn.json'
 
 if os.path.isfile(INFILE):

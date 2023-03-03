@@ -1,8 +1,8 @@
 import os
 import json
 
-INFILE = 'the_internet.json'
-OUTFILE = 'the_internet.lotus'
+INFILE = 'the_internet_cleaned.json'
+OUTFILE = 'the_internet_cleaned.lotus'
 
 if os.path.isfile(INFILE):
     with open(INFILE, 'r') as infile:
