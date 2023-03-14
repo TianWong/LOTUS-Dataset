@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 from matplotlib import pyplot as plt
 import networkx as nx
 
@@ -10,6 +11,8 @@ def update_gexf(input_file, output_file):
 
     G = nx.DiGraph()
     for asn in asn_network_data:
+        if 'rank' not in asn:
+            print(asn)
         G.add_edges_from([(asn['asn'], peer) for peer in asn['peers']], color="red", label="peers")
         G.add_edges_from([(asn['asn'], upstream) for upstream in asn['upstreams']], color="green", label="provider")
 
@@ -21,4 +24,4 @@ def graph_gexf(input_file, output_file):
     plt.savefig(output_file)
 
 if __name__ == "__main__":
-    update_gexf()
+    update_gexf(sys.argv[1], sys.argv[2])
