@@ -1,8 +1,8 @@
 import os
 import json
 
-INFILE = 'the_internet_cleaned.json'
-OUTFILE = 'the_internet_cleaned.lotus'
+INFILE = 'ranked_ca_gb.json'
+OUTFILE = 'ranked_ca_gb.lotus'
 
 if os.path.isfile(INFILE):
     with open(INFILE, 'r') as infile:
@@ -12,7 +12,7 @@ peer_connections = []
 
 with open(OUTFILE, 'w') as outfile:
     for asn in asn_network_data:
-        outfile.write(f'addAS {asn["asn"]}\n')
+        outfile.write(f'addAS {asn["asn"]} {asn["country"]} {asn["rank"]}\n')
     for asn in asn_network_data:
         for upstream in asn['upstreams']:
             outfile.write(f'addConnection down {upstream} {asn["asn"]}\n')
