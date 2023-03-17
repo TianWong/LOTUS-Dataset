@@ -15,6 +15,9 @@ def update_gexf(input_file, output_file):
             print(asn)
         G.add_edges_from([(asn['asn'], peer) for peer in asn['peers']], color="red", label="peers")
         G.add_edges_from([(asn['asn'], upstream) for upstream in asn['upstreams']], color="green", label="provider")
+    for asn in asn_network_data:
+        if G.has_node(asn['asn']):
+            G.nodes[asn['asn']].update({'rank':asn['rank']})
 
     nx.write_gexf(G, output_file)
 
