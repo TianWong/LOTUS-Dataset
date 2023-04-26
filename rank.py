@@ -2,11 +2,11 @@ import json
 import sys
 import networkx as nx
 
-def rank(input_file, output_file):
+def rank(input_file, output_file, top_file):
     with open(input_file, 'r') as infile:
         asn_network_data = json.loads(infile.read())
 
-    with open("top_level_asn.json", 'r') as topfile:
+    with open(top_file, 'r') as topfile:
         top_data = json.loads(topfile.read())
 
     top_list = []
@@ -35,4 +35,4 @@ def rank(input_file, output_file):
 
 
 if __name__ == "__main__":
-    rank(sys.argv[1], sys.argv[2])
+    rank(sys.argv[1], sys.argv[2], sys.argv[3])
