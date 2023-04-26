@@ -16,16 +16,30 @@ def clean(INFILE, OUTFILE):
 
     asns = set([int(asn['asn']) for asn in asn_network_data])
 
-    for i, asn in enumerate(asn_network_data):
+    providers = {}
+
+    for asn in asn_network_data:
         cleaned_entry = {"rir": asn["rir"],
                             "country": asn["country"],
                             "asn": asn["asn"],
                             "prefixes": asn["prefixes"]
         }
         cleaned_entry["upstreams"] = [upstream for upstream in asn["upstreams"] if upstream in asns]
+        providers[int(cleaned_entry["asn"])] = cleaned_entry["upstreams"]
         cleaned_entry["peers"] = [peer for peer in asn["peers"] if peer in asns and peer not in cleaned_entry["upstreams"]]
-        if len(cleaned_entry["upstreams"]) + len(cleaned_entry["peers"]) > 0:
-            asn_network_data_cleaned.append(cleaned_entry)
+        asn_network_data_cleaned.append(cleaned_entry)
+
+    def provider_filter(peer, self_asn, providers):
+        if self_asn in providers and peer in providers[self_asn]:
+            print(self_asn, peer)
+            return False
+        if peer in providers and self_asn in providers[peer]:
+            print(peer, self_asn)
+            return False
+        return True
+
+    for entry in asn_network_data_cleaned:
+        entry["peers"] = list(filter(lambda peer: provider_filter(peer, int(entry["asn"]), providers), entry["peers"]))
 
     with open(OUTFILE, 'w') as outfile:
         json_string = json.dumps(asn_network_data_cleaned, indent=1)
