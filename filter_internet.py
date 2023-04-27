@@ -13,6 +13,7 @@ def filter_internet(in_fp, output, attribute, match_set):
             if entry[attribute] in match_set:
                 output_d.append(entry)
                 asn_set.add(int(entry['asn']))
+        print(f"Found {len(output_d)} ASes with matching criteria")
         for entry in output_d:
             entry['peers'] = [peer for peer in entry['peers'] if peer in asn_set]
             entry['upstreams'] = [peer for peer in entry['upstreams'] if peer in asn_set]

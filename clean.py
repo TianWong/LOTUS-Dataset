@@ -31,10 +31,10 @@ def clean(INFILE, OUTFILE):
 
     def provider_filter(peer, self_asn, providers):
         if self_asn in providers and peer in providers[self_asn]:
-            print(self_asn, peer)
+            # print(self_asn, peer)
             return False
         if peer in providers and self_asn in providers[peer]:
-            print(peer, self_asn)
+            # print(peer, self_asn)
             return False
         return True
 
