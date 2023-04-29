@@ -1,13 +1,16 @@
 import json
 import sys
 import networkx as nx
+import os.path
 
-def rank(input_file, output_file, top_file):
+def rank(input_file, top_file):
     with open(input_file, 'r') as infile:
         asn_network_data = json.loads(infile.read())
 
     with open(top_file, 'r') as topfile:
         top_data = json.loads(topfile.read())
+
+    ranked_outfile = f"{os.path.splitext(input_file)[0]}_ranked.json"
 
     top_list = []
     G = nx.Graph()
@@ -30,9 +33,9 @@ def rank(input_file, output_file, top_file):
 
     asn_network_data = filter(lambda x: x["asn"] not in loop_entries, asn_network_data)
     
-    with open(output_file, 'w') as outfile:
+    with open(ranked_outfile, 'w') as outfile:
         json.dump(list(asn_network_data), outfile, indent=2, separators=(',',':'))
-
+        return ranked_outfile
 
 if __name__ == "__main__":
-    rank(sys.argv[1], sys.argv[2], sys.argv[3])
+    rank(sys.argv[1], sys.argv[2])

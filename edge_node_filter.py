@@ -1,5 +1,5 @@
 import json
-import os
+import os.path
 import sys
 
 if os.path.isfile(sys.argv[1]):
@@ -18,5 +18,5 @@ for key, val in as_country_dict.items():
                 edge_ls.append(key)
                 break
 
-with open(f"{sys.argv[1]}_{sys.argv[2]}_edge_nodes", "w") as out_fp:
+with open(f"{os.path.splitext(sys.argv[1])[0]}_{sys.argv[2]}_edge_nodes", "w") as out_fp:
     json.dump(edge_ls, out_fp)
